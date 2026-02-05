@@ -1,67 +1,164 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include "computor.h"
-#include <math.h>
-#include <string.h>
+#include "libft/inc/libft.h"
 
-int main (int argc, char **argv) {
-    if (argc != 2) {
-        printf("Usage: %s \"equation\"\n", argv[0]);
-        return 1;
+int main(int argc, char **argv)
+{
+    t_equation *equation;
+    if(argc != 2)
+    {
+        printf("Error: Invalid number of arguments\n"
+            "for example: ./computor \"5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0\"");
+        return (1);
     }
-
-}
-
-void parse_equation(const char *input, t_equation *equation) {
-
-    equation->a = 0;
-    equation->b = 0;
-    equation->c = 0;
-    equation->degree = 0;
-
-}
-
-void resolve_degree_zero(t_equation *equation) {
-    printf("Polynomial degree: 0\n");
-    if (equation->c == 0)
-        printf("Any real number is a solution.\n");
     else
-        printf("No solution.\n");
-}
-
-void resolve_degree_one(t_equation *equation) {
-    //bx + c = 0
-    double delta;
-    delta = -equation->c / equation->b;
-    printf("This solution at x = -%f / %f is x = %f",equation->c, equation->b, delta);
-}
-
-void resolve_degree_two(t_equation *equation) {
-    //b^2 - 4ac
-    double delta;
-    delta = 0;
-
-    delta = equation->b * equation->b - 4 * equation->a * equation->c;
-    if (delta > 0) {
-        
-    } else if (delta == 0) {
-
+    {
+        equation = ft_calloc(1, sizeof(t_equation));
+        if(!equation)
+            return (1);
+        if (parse_equation(argv[1], equation) == 1)
+        {
+            printf("error");
+            free(equation);
+            return (1);
+        }
     }
-    else {
-
-    }
-
+    free(equation);
+    return (0);
 }
 
-void resolve_equation(t_equation *equation) {
-    if (equation->degree > 2)
-        printf("The polynomial degree is strictly greater than 2, I can't solve.");
-    else if(equation->degree == 2)
-        resolve_degree_two(equation);
-    else if(equation->degree == 1)
-        resolve_degree_one(equation);
-    else if(equation->degree == 0)
-        resolve_degree_zero(equation);
+int get_degre(t_equation *equation)
+{
+    if (equation->degre > 2)
+        return (0);
+    if (equation->a != 0)
+        equation->degre = 2;
+    else if (equation->b != 0)
+        equation->degre = 1;
     else
-        printf("is negatif cant resolve");
+        equation->degre = 0;
+    return (0);
+}
+
+int parse_equation(char *input_user, t_equation *equation)
+{
+    char *left_side;
+    char *right_side;
+    char *eq;
+    int sign;
+    double coeff;
+    int exp;
+    int n_move;
+    char *p;
+    char *q;
+    
+    eq = strchr(input_user, '=');
+    if(!eq)
+        return (0);
+    left_side = ft_substr(input_user, 0, (size_t)(eq - input_user)); //input_user start at 0 is a pointeur and eq start at = is a pointeur
+    if (!left_side)
+        return (1);
+    right_side = ft_substr(input_user,(size_t)(eq - input_user + 1), ft_strlen(eq + 1));
+    if (!right_side)
+    {
+        free(left_side);
+        return (1);
+    }
+    p = left_side;
+    q = right_side;
+    while(*p)
+    {
+        n_move = 0;
+        sign = 1;
+        while(*p && *p == ' ')
+            p++;
+        if (*p == '-')
+        {
+            sign = -1;
+            p++;
+        }
+        else if (*p == '+')
+        {
+            sign = 1;
+            p++;
+        }
+        if (parse_format(p, &coeff, &exp, &n_move) == 0)
+        {
+            free(left_side);
+            free(right_side);
+            return 1;
+        }
+        p += n_move;
+        double result_final_coeff = coeff * sign;
+        if (fill_tab(equation, result_final_coeff, exp) == 1)
+        {
+            free(left_side);
+            free(right_side);
+            return 1;
+        }
+
+    }
+    while(*q)
+    {
+        n_move = 0;
+        sign = 1;
+        while(*q && *q == ' ')
+            q++;
+        if (*q == '-')
+        {
+            sign = -1;
+            q++;
+        }
+        else if (*q == '+')
+        {
+            sign = 1;
+            q++;
+        }
+        if (parse_format(q, &coeff, &exp, &n_move) == 0)
+        {
+            free(left_side);
+            free(right_side);
+            return 1;
+        }
+        q += n_move;
+        double result_final_coeff = coeff * sign * (-1);
+        if (fill_tab(equation, result_final_coeff, exp) == 1)
+        {
+            free(left_side);
+            free(right_side);
+            return 1;
+        }
+    }
+    free(left_side);
+    free(right_side);
+    return (0);
+}
+
+int parse_format(char *input_user, double *coeff, int *exp, int *n_move)
+{
+    int i;
+    i = 0;
+
+    i = sscanf(input_user, " %lf * X^%d %n", coeff, exp, n_move);
+    if (i == 2)
+        return (0);
+    return (1);
+}
+
+int fill_tab(t_equation *equation, double coeff, int exp)
+{
+    if (exp == 0)
+        equation->c += coeff;
+    else if(exp == 1)
+        equation->b += coeff;
+    else if(exp == 2)
+        equation->a += coeff;
+    else if(exp > 2)
+        equation->degre = exp;
+    else
+    {
+        printf("Its a rong exp");
+        return (1);
+    }
+    return (0);
+
 }

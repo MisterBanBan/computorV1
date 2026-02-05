@@ -1,14 +1,15 @@
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-typedef struct s_equation {
-    double a;
-    double b;
-    double c;
-    int degree;
+typedef struct s_equation{
+    double a; //x^2
+    double b; //x^1
+    double c; //x^0
+    int degre;
 } t_equation;
 
-void    parse_equation(const char *input, t_equation *equation);
-void    resolve_degree_zero(t_equation *equation);
-void    resolve_degree_one(t_equation *equation);
-void    resolve_degree_two(t_equation *equation);
-void    resolve_equation(t_equation *equation);
-
+int parse_format(char *equation, double *coeff, int *exp, int *n_move);
+int parse_equation(char *input_user, t_equation *equation);
+int fill_tab(t_equation *equation, double coeff, int exp);
