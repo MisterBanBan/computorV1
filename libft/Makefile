@@ -3,17 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: afavier <afavier@student.42.fr>            +#+  +:+       +#+         #
+#    By: mtbanban <mtbanban@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/08 15:00:52 by afavier           #+#    #+#              #
-#    Updated: 2024/02/13 13:17:59 by afavier          ###   ########.fr        #
+#    Updated: 2026/02/08 16:33:39 by mtbanban         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 SRC_DIR = src
 BUILD_DIR = .build
-DEPS_DIR = .deps
 INC = inc/libft.h \
 	inc/get_next_line.h\
 	inc/ft_printf.h \
@@ -119,7 +118,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 
 
 $(NAME): $(OBJS)
-		$(AR) $(ARFLAGS) $(NAME) $(OBJS);
+		$(AR) $(ARFLAGS) $(NAME) $(OBJS)
 
 -include $(DEPS)
 # **************************************************************************** #

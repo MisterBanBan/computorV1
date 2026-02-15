@@ -1,12 +1,12 @@
-NAME = computor
-SRC = computor.c
-OBJ = $(SRC:.c=.o)
-LIBFT = libft/libft.a
+NAME     = computor
+SRC      = computor.c
+OBJ      = $(SRC:.c=.o)
+LIBFT    = libft/libft.a
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
-LDFLAGS = -Llibft -lft -lm
+CC       = cc
+CFLAGS   = -Wall -Wextra -Werror
 INCLUDES = -Ilibft/inc
+LDFLAGS  = -Llibft -lft -lm
 
 all: $(NAME)
 
@@ -20,11 +20,11 @@ $(LIBFT):
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ)
+	rm -f $(OBJ)
 	$(MAKE) -C libft clean
 
 fclean: clean
-	$(RM) $(NAME)
+	rm -f $(NAME)
 	$(MAKE) -C libft fclean
 
 re: fclean all
